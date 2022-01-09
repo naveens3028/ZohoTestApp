@@ -132,7 +132,6 @@ class MainFragment : Fragment() , OnDataClickListener{
     }
 
     fun callAutoCompleteAdapter(){
-
         autoCompleteTxt.doAfterTextChanged {
             if (!it.isNullOrEmpty()) {
                 var filteredList = myList

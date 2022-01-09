@@ -24,9 +24,9 @@ class WeatherViewModel : ViewModel() {
         hashmap.put("lon", longitude.toString())
         hashmap.put("appid", AppConstants.API_KEY)
         viewModelScope.launch {
-            val response = service.getWaether(hashmap)
+            val response = service.getWeather(hashmap)
             if (response.isSuccessful) {
-                println(response.body()?.name)
+                println("respomseweather"+response.body()?.name)
                 weatherData.postValue(response.body())
             } else {
                 Toast.makeText(context, "failed", Toast.LENGTH_LONG).show()

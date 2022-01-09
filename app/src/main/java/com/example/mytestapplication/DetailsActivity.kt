@@ -34,6 +34,7 @@ class DetailsActivity : AppCompatActivity() {
             intent.putExtra("phase", "details")
             intent.putExtra("lat", latitude)
             intent.putExtra("lon", longitude)
+            intent.putExtra("city", country)
             startActivity(intent)
         }
 

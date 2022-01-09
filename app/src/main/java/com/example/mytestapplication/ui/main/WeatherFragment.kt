@@ -1,6 +1,6 @@
 package com.example.mytestapplication.ui.main
 
-import android.annotation.SuppressLint
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -26,17 +26,19 @@ import java.util.*
 private const val isFrom = "isFrom"
 private const val LATITUDE = "latitude"
 private const val LONGITUDE = "longitude"
+private const val CITY = "city"
 
 class WeatherFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(fromActivity: String?, latitude: String?, longitude: String?) =
+        fun newInstance(fromActivity: String?, latitude: String?, longitude: String?, city: String?) =
             WeatherFragment().apply {
                 arguments = Bundle().apply {
                     putString(isFrom, fromActivity)
                     putString(LATITUDE, latitude)
                     putString(LONGITUDE, longitude)
+                    putString(CITY, city)
                 }
             }
     }
@@ -48,6 +50,7 @@ class WeatherFragment : Fragment() {
     private var number = 0
     private var latitude: String? = null
     private var longitude: String? = null
+    private var city: String? = null
     private var fromActivity: String? = null
 
     override fun onCreateView(
@@ -68,6 +71,7 @@ class WeatherFragment : Fragment() {
             fromActivity = it.getString(isFrom)
             latitude = it.getString(LATITUDE)
             longitude = it.getString(LONGITUDE)
+            city = it.getString(CITY)
         }
 
         if (fromActivity == "details") {
@@ -84,7 +88,35 @@ class WeatherFragment : Fragment() {
                     AppConstants.ALL_REQUEST_CODE
                 )
             } else {
-                getLocationFromManager()
+               if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return
+                }
+                val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+                CustomProgressDialog.loadingProgress(requireActivity())
+                main.visibility = View.GONE
+
+                lastKnownLocation?.let {
+                    viewModel.getWeatherApiCall(
+                        requireContext(),
+                        it.latitude,
+                        it.longitude
+                    )
+                }
             }
 
         }
@@ -123,23 +155,6 @@ class WeatherFragment : Fragment() {
             }
         }
         return true
-    }
-
-    @SuppressLint("MissingPermission")
-    fun getLocationFromManager() {
-        val lastKnownLocation =
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-
-        CustomProgressDialog.loadingProgress(requireActivity())
-        main.visibility = View.GONE
-
-        lastKnownLocation?.let {
-            viewModel.getWeatherApiCall(
-                requireContext(),
-                it.latitude,
-                it.longitude
-            )
-        }
     }
 
     private fun changeWeather(weatherModel: WeatherModel) {
@@ -190,7 +205,9 @@ class WeatherFragment : Fragment() {
 
         // Set the weather text to the current weather
         tv_temp.text = "Temperature : ${AppConstants.kelvinToCelcius(weatherModel.main?.temp!!)} C"
-        tv_city_name.text = "City : ${weatherModel.name}"
+        if (weatherModel.name.isNullOrEmpty()){
+            tv_city_name.text = "City : $city"
+        }else tv_city_name.text = "City : ${weatherModel.name}"
         tv_weather_status.text = "Weather : $weatherText"
         tv_feels.text =
             "Feels Like : ${AppConstants.kelvinToCelcius(weatherModel.main?.feelsLike!!)} C"

@@ -1,6 +1,5 @@
 package com.example.mytestapplication.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DataAdapter(var myData: List<Result>?, var listener: OnDataClickListener) : RecyclerView.Adapter<DataAdapter.MyViewHolder>() {
+class DataAdapter(var myData: List<Result>?, var listener: OnDataClickListener) :
+    RecyclerView.Adapter<DataAdapter.MyViewHolder>() {
 
     private val item: Int = 0
     private val loading: Int = 1
-    private var isLoadingAdded: Boolean = false
 
     fun updateList(results: List<Result>?) {
         myData = results
@@ -56,17 +55,20 @@ class DataAdapter(var myData: List<Result>?, var listener: OnDataClickListener) 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         if (getItemViewType(position) == item) {
             val data = myData?.get(position)
-            holder.itemView.nameTxt.text = (position+1).toString() + ".  " + data?.name?.first
-            holder.itemView.addressTxt.text = "Email : "+data?.email
-            holder.itemView.popTxt.text =  "Gender : "+data?.gender
+            holder.itemView.nameTxt.text = (position + 1).toString() + ".  " + data?.name?.first
+            holder.itemView.addressTxt.text = "Email : " + data?.email
+            holder.itemView.popTxt.text = "Gender : " + data?.gender
 
             holder.itemView.setOnClickListener {
-                data?.let { it1 -> listener.onDataClicked(it1.picture?.large!!,
-                    it1.name?.first.toString(), it1.email.toString(),
-                    it1.location?.coordinates?.latitude!!,
-                    it1.location?.coordinates?.longitude!!,
-                    it1.location!!.country!!
-                ) }
+                data?.let { it1 ->
+                    listener.onDataClicked(
+                        it1.picture?.large!!,
+                        it1.name?.first.toString(), it1.email.toString(),
+                        it1.location?.coordinates?.latitude!!,
+                        it1.location?.coordinates?.longitude!!,
+                        it1.location!!.country!!
+                    )
+                }
             }
         } else {
             CoroutineScope(Dispatchers.Main).launch {
@@ -80,6 +82,13 @@ class DataAdapter(var myData: List<Result>?, var listener: OnDataClickListener) 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }
 
-interface OnDataClickListener{
-    fun onDataClicked(image : String, name: String, desc: String, lat: String, lon: String, country: String )
+interface OnDataClickListener {
+    fun onDataClicked(
+        image: String,
+        name: String,
+        desc: String,
+        lat: String,
+        lon: String,
+        country: String
+    )
 }

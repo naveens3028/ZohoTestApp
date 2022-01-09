@@ -14,7 +14,7 @@ interface ApiInterface {
     suspend fun getData(@QueryMap results : HashMap<String, Int>): Response<DataModel>
 
     @GET("weather")
-    suspend fun getWaether(@QueryMap results: HashMap<String, String>): Response<WeatherModel>
+    suspend fun getWeather(@QueryMap results: HashMap<String, String>): Response<WeatherModel>
 
 
 }

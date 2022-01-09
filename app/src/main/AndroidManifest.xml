@@ -18,16 +18,16 @@
         <activity
             android:name=".PhasePickerActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize"
             tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".DetailsActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            />
     </application>
 
 </manifest>
