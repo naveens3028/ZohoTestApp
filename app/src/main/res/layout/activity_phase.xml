@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    tools:context=".MainActivity" >
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/phase1"
+        android:textColor="@color/white"
+        android:background="@color/purple_500"
+        android:id="@+id/phase1Btn"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/phase2"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:background="@color/purple_500"
+        android:layout_below="@id/phase1Btn"
+        android:id="@+id/phase2Btn"/>
+
+
+
+</RelativeLayout>
